@@ -1,30 +1,23 @@
-"""Решение популярной задачи FizzBuzz."""
+"""
+Решение популярной задачи FizzBuzz.
+
+Перебирая числа от 1 до 100, если число кратно 3, напечатать Fizz, если число
+кратно 5, напечатать Buzz, если число кратно и 3 и 5, напечатать FizzBuzz, если
+число не кратно ни 3, ни 5, напечатать само число.
+"""
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
-    i = 0
-
-    def fizz() -> None:
-        print('Fizz')
-
-    def buzz() -> None:
-        print('Buzz')
-
-    def fizzbuzz() -> None:
-        print('FizzBuzz')
-
-    def number() -> None:
-        print(i)
-
-    to_print = {0: number, 1: fizz, 2: buzz, 3: fizzbuzz}
     for i in range(1, 101):
-        key = 0
-        if not i % 3:
-            key += 1
-        if not i % 5:
-            key += 2
-        to_print[key]()
+        is_multiple_by_3 = (i % 3) == 0
+        is_multiple_by_5 = (i % 5) == 0
+        if is_multiple_by_3:
+            print('Fizz', end='')
+        if is_multiple_by_5:
+            print('Buzz', end='')
+        if not is_multiple_by_3 and not is_multiple_by_5:
+            print(i, end='')
+        print()
 
 
 if __name__ == '__main__':

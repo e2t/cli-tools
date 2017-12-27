@@ -1,39 +1,32 @@
-"""Программма генерирует случайную таблицу для одного корпоративного теста."""
+"""Генерация таблицы случайных ответов для одного корпоративного теста."""
 from random import randint
 from math import log10
-from typing import List
+
+
+SIZE = 26
+MAXNUM = 2
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
-    size = 26
-    maxnum = 2
-    pos_number = int(log10(size)) + 2
+    pos_number = int(log10(SIZE)) + 2
 
-    def create_matrix(size: int) -> List[List[int]]:
-        matrix = [[randint(0, maxnum) for i in range(size)]
-                  for i in range(size)]
-        for row in range(size):
-            for col in range(row + 1, size):
-                matrix[row][col] = maxnum - matrix[col][row]
-        return matrix
-
-    def cells(value: str) -> str:
+    def cell_s(value: str) -> str:
         return value * pos_number
 
-    def celli(value: int) -> str:
+    def cell_i(value: int) -> str:
         return '%*d' % (pos_number, value)
 
-    def create_table(matrix: List[List[int]]) -> str:
-        table = [[cells(' '), '|'] + [celli(i + 1) for i in range(size)],
-                 [cells('-')] * (size + 2)]
-        for row in range(size):
-            table.append([celli(row + 1), '|'] +
-                         [cells(' ') if row == col else celli(matrix[row][col])
-                          for col in range(size)])
-        return '\n'.join([''.join(i) for i in table])
-
-    print(create_table(create_matrix(size)))
+    matrix = [[randint(0, MAXNUM) for i in range(SIZE)] for i in range(SIZE)]
+    for row in range(SIZE):
+        for col in range(row + 1, SIZE):
+            matrix[row][col] = MAXNUM - matrix[col][row]
+    table = [[cell_s(' '), '|'] + [cell_i(i + 1) for i in range(SIZE)],
+             [cell_s('-')] * (SIZE + 2)]
+    for row in range(SIZE):
+        table.append([cell_i(row + 1), '|'] +
+                     [cell_s(' ') if row == col else cell_i(matrix[row][col])
+                      for col in range(SIZE)])
+    print('\n'.join([''.join(i) for i in table]))
 
 
 if __name__ == '__main__':

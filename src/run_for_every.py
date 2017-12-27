@@ -7,33 +7,40 @@
 т.е. ожидая завершения предыдущего процесса или все одновременно.
 """
 import os
-import sys
-from subprocess import Popen
+import subprocess
+import argparse
+
+
+SEPARATOR = '--'
+USAGE = '%(prog)s [-h] [--wait] -- program [options] -- file [file ...]'
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
-    len_argv = len(sys.argv)
-    if len_argv < 5:
+    arg_parser = argparse.ArgumentParser(usage=USAGE)
+    arg_parser.add_argument('--wait', action='store_const', const=True,
+                            help='ожидать завершения каждого процесса')
+    arg_parser.add_argument('argv', nargs='+')
+    args = arg_parser.parse_args()
+
+    if len(args.argv) < 3:
         exit(1)
-    separator = '--'
-    if separator not in sys.argv:
+    if SEPARATOR not in args.argv:
         exit(1)
-    separator_index = sys.argv.index(separator)
-    if separator_index < 3:
+    separator_index = args.argv.index(SEPARATOR)
+    if separator_index < 1:
         exit(1)
-    need_wait = sys.argv[1] == 'wait'
-    cmd = sys.argv[2:separator_index] + ['']
-    files_number = len_argv - separator_index - 1
+    cmd = args.argv[:separator_index] + ['']
+    files = args.argv[separator_index + 1:]
+    files_number = len(files)
 
     def percents(index: int) -> str:
         return '%3d%%' % (100 * (index + 1) / files_number)
 
-    for index, filename in enumerate(sys.argv[separator_index + 1:]):
+    for index, filename in enumerate(files):
         print(percents(index), os.path.basename(filename))
         cmd[-1] = filename
-        proc = Popen(cmd)
-        if need_wait:
+        proc = subprocess.Popen(cmd)
+        if args.wait:
             proc.wait()
 
 

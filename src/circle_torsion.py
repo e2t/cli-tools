@@ -5,22 +5,21 @@ from cli import mainloop, FloatParameter, is_positive, is_positive_or_zero, \
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
     torque = FloatParameter('Крутящий момент, Нм', is_positive)
     ext_diam = FloatParameter('Наружный диаметр, мм', is_positive, from_mm)
 
-    def test_inn_diam(val: float) -> bool:
+    def check_inn_diam(val: float) -> bool:
         return is_positive_or_zero(val) and is_this(
             val < ext_diam.value, 'Не может быть меньше наружного диаметра')
 
     inn_diam = FloatParameter('Внутренний диаметр, мм (0 для вала)',
-                              test_inn_diam, from_mm)
+                              check_inn_diam, from_mm)
 
     def compute_and_print() -> None:
         alpha = inn_diam.value / ext_diam.value
         polar_moment = pi * ext_diam.value**3 / 16 * (1 - alpha**4)
         stress = torque.value / polar_moment
-        print('Напряжение {0:.1f} МПа'.format(stress / 1e6))
+        print(f'Напряжение {stress / 1e6:.1f} МПа')
 
     mainloop((torque, ext_diam, inn_diam), compute_and_print)
 

@@ -3,7 +3,6 @@ import sys
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
     args = sys.argv[1:]
     if args:
         text = ' '.join(args)

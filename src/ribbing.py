@@ -23,7 +23,6 @@ def _arith_seq_summa(qty: int, first: float, step: float) -> float:
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
     sum_a = FloatParameter('Сумма N1 элементов', is_positive)
     qty_a = IntParameter('N1', is_positive)
     sum_b = FloatParameter('Сумма N2 элементов', is_positive)

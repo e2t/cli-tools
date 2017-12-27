@@ -8,7 +8,6 @@ from cli import FloatParameter, print_error, mainloop
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
     x1 = FloatParameter('x1')
     y1 = FloatParameter('y1')
     z1 = FloatParameter('z1')
@@ -37,9 +36,9 @@ def main() -> None:
                 kb = (k4 - k5 * kc) / k6
             else:
                 kb = (k1 - k2 * kc) / k3
-            ka = (z1.value - x1.value * kb - y1.value * kc) / x1.value /\
-                y1.value
-            print('A = {0}\nB = {1}\nC = {2}'.format(ka, kb, kc))
+            ka = ((z1.value - x1.value * kb - y1.value * kc) / x1.value /
+                  y1.value)
+            print(f'A = {ka}\nB = {kb}\nC = {kc}')
         except ZeroDivisionError:
             print_error('Деление на ноль!')
 

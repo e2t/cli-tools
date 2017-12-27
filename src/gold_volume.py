@@ -11,7 +11,6 @@ def _cylinder_height(volume: float, diameter: float) -> float:
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
     volume = FloatParameter('Объем цилиндра, л', is_positive, from_l)
 
     def compute_and_print() -> None:
@@ -19,8 +18,8 @@ def main() -> None:
         diam2 = (4 * volume.value / pi / PHI)**(1 / 3)
         height1 = _cylinder_height(volume.value, diam1)
         height2 = _cylinder_height(volume.value, diam2)
-        print('D1 = %.0f мм, H1 = %.0f мм\nD2 = %.0f мм, H2 = %.0f мм' %
-              (diam1 * 1e3, height1 * 1e3, diam2 * 1e3, height2 * 1e3))
+        print(f'D1 = {diam1 * 1e3:.0f} мм, H1 = {height1 * 1e3:.0f} мм\n'
+              f'D2 = {diam2 * 1e3:.0f} мм, H2 = {height2 * 1e3:.0f} мм')
 
     mainloop((volume,), compute_and_print)
 

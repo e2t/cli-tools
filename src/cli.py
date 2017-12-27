@@ -1,7 +1,7 @@
 """
 Модуль позволяет создавать цикличные консольные приложения.
 
- * Имеется набор параметров, которые необходимы для решения задачи и вводятся
+ * Задается набор параметров, которые необходимы для решения задачи и вводятся
 пользователем с клавиатуры.
  * Для каждого параметра описывается допустимый диапазон значений и своё
 преобразование единиц.
@@ -55,22 +55,24 @@ def input_line(prompt: str) -> str:
 
 def str_to_int(text: str) -> int:
     """Преобразует строку в целое число."""
-    if not text:
+    if text:
+        try:
+            return int(text)
+        except ValueError:
+            raise IncorrectLine('Ожидается целое число')
+    else:
         raise EmptyLine
-    try:
-        return int(text)
-    except ValueError:
-        raise IncorrectLine('Ожидается целое число')
 
 
 def str_to_float(text: str) -> float:
     """Преобразует строку в вещественное число."""
-    if not text:
+    if text:
+        try:
+            return float(text)
+        except ValueError:
+            raise IncorrectLine('Ожидается число')
+    else:
         raise EmptyLine
-    try:
-        return float(text)
-    except ValueError:
-        raise IncorrectLine('Ожидается число')
 
 
 def is_this(condition: bool, warning: str) -> bool:
@@ -117,29 +119,29 @@ def always_allowable(_: NumberType) -> bool:
     return True
 
 
-class _Parameter(Generic[NumberType]):
+class Parameter(Generic[NumberType]):
     def __init__(
             self, caption: str,
-            is_allowable:  Optional[Callable[[NumberType], bool]]=None,
+            is_allowable: Optional[Callable[[NumberType], bool]]=None,
             convert_units: Optional[Callable[[NumberType], NumberType]]=None) \
             -> None:
-        self._caption: str = caption
-        self._is_allowable: Callable[[NumberType], bool] = always_allowable
+        self.caption: str = caption
+        self.is_allowable: Callable[[NumberType], bool] = always_allowable
         if is_allowable is not None:
-            self._is_allowable = is_allowable
-        self._convert_units: Callable[[NumberType], NumberType] = dont_convert
+            self.is_allowable = is_allowable
+        self.convert_units: Callable[[NumberType], NumberType] = dont_convert
         if convert_units is not None:
-            self._convert_units = convert_units
+            self.convert_units = convert_units
 
-    def _convert_and_check_value(self, raw_value: NumberType) -> NumberType:
-        value = self._convert_units(raw_value)
-        if not self._is_allowable(value):
+    def convert_and_check_value(self, raw_value: NumberType) -> NumberType:
+        value = self.convert_units(raw_value)
+        if not self.is_allowable(value):
             raise NotAllowableValue
         return value
 
     @staticmethod
     @abstractmethod
-    def _str_to_number(text: str) -> NumberType:
+    def str_to_number(text: str) -> NumberType:
         pass
 
     @abstractmethod
@@ -148,75 +150,78 @@ class _Parameter(Generic[NumberType]):
         pass
 
 
-class _NumericParameter(Generic[NumberType], _Parameter):
+class NumericParameter(Generic[NumberType], Parameter):
     def __init__(
             self, caption: str,
-            is_allowable:  Optional[Callable[[NumberType], bool]]=None,
+            is_allowable: Optional[Callable[[NumberType], bool]]=None,
             convert_units: Optional[Callable[[NumberType], NumberType]]=None,
-            init_value:    Optional[NumberType]=None) \
+            init_value: Optional[NumberType]=None) \
             -> None:
-        self._prev_raw_value: Optional[NumberType] = None
+        self.prev_raw_value: Optional[NumberType] = None
         super().__init__(caption, is_allowable, convert_units)
         if init_value is not None:
             try:
-                self._check_and_set(init_value)
+                self.check_and_set(init_value)
             except NotAllowableValue:
                 pass
 
     def input_value(self) -> None:
         while True:
-            inputed_text = input_line(self._prompt())
+            inputed_text = input_line(self.prompt())
             try:
-                raw_value = self._str_to_number(inputed_text)
+                raw_value = self.str_to_number(inputed_text)
                 try:
-                    self._check_and_set(raw_value)
+                    self.check_and_set(raw_value)
                     break
                 except NotAllowableValue:
                     pass
             except EmptyLine as excp:
-                if self._prev_raw_value is not None:
+                if self.prev_raw_value is not None:
                     break
                 print_error(str(excp))
             except IncorrectLine as excp:
                 print_error(str(excp))
 
-    def _check_and_set(self, raw_value: NumberType) -> None:
-        value = self._convert_and_check_value(raw_value)
+    def check_and_set(self, raw_value: NumberType) -> None:
+        value = self.convert_and_check_value(raw_value)
         self._value: NumberType = value
-        self._prev_raw_value = raw_value
+        self.prev_raw_value = raw_value
 
     @property
     def value(self) -> NumberType:
         """Вовзращает значение параметра."""
         return self._value
 
-    def _prompt(self) -> str:
-        if self._prev_raw_value is not None:
-            return '\t{0} [{1:g}]: '.format(self._caption,
-                                            self._prev_raw_value)
-        return '\t{0}: '.format(self._caption)
+    def prompt(self) -> str:
+        if self.prev_raw_value is not None:
+            # TODO: :g сокращает целое 1000000 в 1е+6
+            result = '\t{0} [{1:g}]: '.format(self.caption,
+                                              self.prev_raw_value)
+        else:
+            result = '\t{0}: '.format(self.caption)
+        return result
 
 
-class IntParameter(_NumericParameter[int]):
+class IntParameter(NumericParameter[int]):
     """Класс целочисленных параметров."""
 
     @staticmethod
-    def _str_to_number(text: str) -> int:
+    def str_to_number(text: str) -> int:
         return str_to_int(text)
 
 
-class FloatParameter(_NumericParameter[float]):
+class FloatParameter(NumericParameter[float]):
     """Класс вещественных параметров."""
 
     @staticmethod
-    def _str_to_number(text: str) -> float:
+    def str_to_number(text: str) -> float:
         return str_to_float(text)
 
 
-class _ArrayParameter(Generic[NumberType], _Parameter):
+class ArrayParameter(Generic[NumberType], Parameter):
     def __init__(
             self, caption: str,
-            is_allowable:  Optional[Callable[[NumberType], bool]]=None,
+            is_allowable: Optional[Callable[[NumberType], bool]]=None,
             convert_units: Optional[Callable[[NumberType], NumberType]]=None) \
             -> None:
         self._value: List[NumberType] = []
@@ -230,11 +235,11 @@ class _ArrayParameter(Generic[NumberType], _Parameter):
     def input_value(self) -> None:
         self._value.clear()
         while True:
-            inputed_text = input_line(self._prompt())
+            inputed_text = input_line(self.prompt())
             try:
-                raw_value = self._str_to_number(inputed_text)
+                raw_value = self.str_to_number(inputed_text)
                 try:
-                    self._check_and_set(raw_value)
+                    self.check_and_set(raw_value)
                 except NotAllowableValue:
                     pass
             except EmptyLine as excp:
@@ -244,23 +249,23 @@ class _ArrayParameter(Generic[NumberType], _Parameter):
             except IncorrectLine as excp:
                 print_error(str(excp))
 
-    def _check_and_set(self, raw_value: NumberType) -> None:
-        value = self._convert_and_check_value(raw_value)
+    def check_and_set(self, raw_value: NumberType) -> None:
+        value = self.convert_and_check_value(raw_value)
         self._value.append(value)
 
-    def _prompt(self) -> str:
-        return '\t{0}: '.format(self._caption)
+    def prompt(self) -> str:
+        return '\t{0}: '.format(self.caption)
 
 
-class ArrayFloatParameter(_ArrayParameter[float]):
+class ArrayFloatParameter(ArrayParameter[float]):
     """Класс параметр-массива вещественных чисел."""
 
     @staticmethod
-    def _str_to_number(text: str) -> float:
+    def str_to_number(text: str) -> float:
         return str_to_float(text)
 
 
-def mainloop(params: Tuple[_Parameter, ...],
+def mainloop(params: Tuple[Parameter, ...],
              compute_and_print: Callable[[], None]) -> None:
     """Основной цикл ввода параметров и вывода результатов."""
     while True:

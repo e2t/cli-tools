@@ -1,35 +1,47 @@
 """Программа для запуска выделенных PDF-файлов."""
-import sys
 import os
 import re
+import sys
+import argparse
+import sort_drawings
+
+
+PDF_PATTERN = re.compile(r'.*PDF$', re.IGNORECASE)
+ASM_PATTERN = re.compile(fr'.*({sort_drawings.TYPE}).+', re.IGNORECASE)
+
+
+def is_assembly(name: str) -> bool:
+    return ASM_PATTERN.match(name) is not None
+
+
+def is_not_assembly(name: str) -> bool:
+    return not is_assembly(name)
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
-    pdf_pattern = re.compile(r'.*PDF', re.IGNORECASE)
-    asm_pattern = re.compile(r'.*[0-9][ _]?(СБ|МЧ|ВО)[ _.].*', re.IGNORECASE)
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument('--assembly', action='store_const', const=True,
+                            help='открывать сборки вместо деталей')
+    arg_parser.add_argument('files', nargs='+')
+    args = arg_parser.parse_args()
 
-    def is_assembly(name: str) -> bool:
-        return asm_pattern.match(name) is not None
-
-    def is_not_assembly(name: str) -> bool:
-        return not is_assembly(name)
-
-    comparing = is_not_assembly
-    if sys.argv[1] == '1':
-        comparing = is_assembly
+    if args.assembly:
+        is_proper = is_assembly
     else:
-        comparing = is_not_assembly
+        is_proper = is_not_assembly
 
     def scan_dir(fso: str) -> None:
         if os.path.isdir(fso):
             for i in os.listdir(fso):
-                scan_dir(fso + os.sep + i)
-        elif pdf_pattern.match(fso) and comparing(os.path.basename(fso)):
+                scan_dir(os.path.join(fso, i))
+        elif PDF_PATTERN.match(fso) and is_proper(os.path.basename(fso)):
             os.startfile(fso)  # maybe don't work with Linux
 
-    for i in sys.argv[2:]:
-        scan_dir(i)
+    for i in args.files:
+        if os.path.exists(i):
+            scan_dir(i)
+        else:
+            print(f'File not found "{i}"', file=sys.stderr)
 
 
 if __name__ == '__main__':

@@ -17,12 +17,10 @@ def _second_root(discr: float, coef_a: float, coef_b: float) -> float:
 def _test_roots(root: float, coef_a: float, coef_b: float, coef_c: float) \
         -> None:
     zero = coef_a * root**2 + coef_b * root + coef_c
-    print('{0} * {3}^2 + {1} * {3} + {2} = {4}'.format(
-        coef_a, coef_b, coef_c, root, zero))
+    print(f'{coef_a} * {root}^2 + {coef_b} * {root} + {coef_c} = {zero}')
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
     print('\tA * x^2 + B * x + C = 0\n')
 
     def is_nozero(number: float) -> bool:
@@ -34,19 +32,19 @@ def main() -> None:
 
     def compute_and_print() -> None:
         discr = _discriminant(coef_a.value, coef_b.value, coef_c.value)
-        print('Дискриминант = {0}'.format(discr))
+        print(f'Дискриминант = {discr}')
         if discr < 0:
             print('Нет корней')
-            return
-        root1 = _first_root(discr, coef_a.value, coef_b.value)
-        print('1-й корень = {0}'.format(root1))
-        if discr > 0:
-            root2 = _second_root(discr, coef_a.value, coef_b.value)
-            print('2-й корень = {0}'.format(root2))
-        print()
-        _test_roots(root1, coef_a.value, coef_b.value, coef_c.value)
-        if discr > 0:
-            _test_roots(root2, coef_a.value, coef_b.value, coef_c.value)
+        else:
+            root1 = _first_root(discr, coef_a.value, coef_b.value)
+            print(f'1-й корень = {root1}')
+            if discr > 0:
+                root2 = _second_root(discr, coef_a.value, coef_b.value)
+                print(f'2-й корень = {root2}')
+            print()
+            _test_roots(root1, coef_a.value, coef_b.value, coef_c.value)
+            if discr > 0:
+                _test_roots(root2, coef_a.value, coef_b.value, coef_c.value)
 
     mainloop((coef_a, coef_b, coef_c), compute_and_print)
 

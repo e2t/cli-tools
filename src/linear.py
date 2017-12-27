@@ -12,7 +12,6 @@ def _eq1_coeficient_b(x1_coor: float, y1_coor: float, coef_k: float) -> float:
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
     x1_coor = FloatParameter('X1')
     y1_coor = FloatParameter('Y1')
     x2_coor = FloatParameter('X2')
@@ -27,15 +26,15 @@ def main() -> None:
 
     def compute_and_print() -> None:
         if x1_coor.value == x2_coor.value:
-            print('X = %g' % x1_coor.value)
+            print(f'X = {x1_coor.value:g}')
         elif y1_coor.value == y2_coor.value:
-            print('Y = %g' % y1_coor.value)
+            print(f'Y = {y1_coor.value:g}')
         else:
             coef_k = _eq1_coeficient_k(x1_coor.value, y1_coor.value,
                                        x2_coor.value, y2_coor.value)
             coef_b = _eq1_coeficient_b(x1_coor.value, y1_coor.value, coef_k)
-            print('Y = %g * X + (%g)' % (coef_k, coef_b))
-            print('Y2 = %g' % (coef_k * x2_coor.value + coef_b))
+            print(f'Y = {coef_k:g} * X + ({coef_b:g})')
+            print(f'Y2 = {coef_k * x2_coor.value + coef_b:g}')
 
     mainloop((x1_coor, y1_coor, x2_coor, y2_coor), compute_and_print)
 

@@ -5,11 +5,10 @@ from cli import FloatParameter, IntParameter, is_positive, mainloop
 
 
 def _diapason(from_to: Tuple[float, float], coef: float) -> str:
-    return '%g..%g' % (coef * from_to[0], coef * from_to[1])
+    return f'{coef * from_to[0]:g}..{coef * from_to[1]:g}'
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
     teeth_number = IntParameter('Число зубьев, Z', is_positive)
     module = FloatParameter('Модуль', is_positive)
 
@@ -30,21 +29,21 @@ def main() -> None:
         face_width = _diapason((2.5, 4), module.value)
         disk_width = _diapason((3, 3.5), module.value)
         print(
-            'Диаметр выступов зубьев = %g' % ext_diam,
-            'Делительный диаметр = %g' % axis_diam,
-            'Диаметр впадин зубьев = %g' % inn_diam,
-            'Шаг зубьев = %g' % pitch,
-            'Высота зуба = %g' % tooth_height,
-            'Высота головки зуба = %g' % tooth_top_height,
-            'Высота ножки зуба = %g' % tooth_bottom_height,
-            'Толщина зуба = %g' % tooth_thickness,
-            'Ширина впадин = %g' % cavity_width,
-            'Ширина зуба = %s' % tooth_width,
-            'Диаметр вала (ГОСТ 6636-69) = %g' % shaft_diam,
-            'Диаметр ступицы = %s' % hub_diam,
-            'Длина ступицы = %s' % hub_length,
-            'Толщина венца = %s' % face_width,
-            'Толщина диска = %s' % disk_width,
+            f'Диаметр выступов зубьев = {ext_diam:g}',
+            f'Делительный диаметр = {axis_diam:g}',
+            f'Диаметр впадин зубьев = {inn_diam:g}',
+            f'Шаг зубьев = {pitch:g}',
+            f'Высота зуба = {tooth_height:g}',
+            f'Высота головки зуба = {tooth_top_height:g}',
+            f'Высота ножки зуба = {tooth_bottom_height:g}',
+            f'Толщина зуба = {tooth_thickness:g}',
+            f'Ширина впадин = {cavity_width:g}',
+            f'Ширина зуба = {tooth_width}',
+            f'Диаметр вала (ГОСТ 6636-69) = {shaft_diam:g}',
+            f'Диаметр ступицы = {hub_diam}',
+            f'Длина ступицы = {hub_length}',
+            f'Толщина венца = {face_width}',
+            f'Толщина диска = {disk_width}',
             sep='\n')
 
     mainloop((teeth_number, module), compute_and_print)

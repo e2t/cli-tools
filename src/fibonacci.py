@@ -2,8 +2,8 @@
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
-    i, j = 0, 1
+    i = 0
+    j = 1
     for _ in range(20):
         print(i)
         i, j = j, i + j

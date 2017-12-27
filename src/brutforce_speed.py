@@ -4,6 +4,9 @@ from math import log
 from cli import FloatParameter, is_positive, mainloop
 
 
+SYMBOLS_NUMBER = 36
+MAX_LEN_PASSWD = 12
+
 UNITS = OrderedDict({60 * 60 * 24 * 30 * 12: 'year',
                      60 * 60 * 24 * 30: 'month',
                      60 * 60 * 24: 'day',
@@ -13,36 +16,36 @@ UNITS = OrderedDict({60 * 60 * 24 * 30 * 12: 'year',
 
 
 def _optimal_size_units(time: float) -> int:
-    i = 0
-    for i in UNITS:
-        if time >= i:
-            break
-    return i
+    iterator = filter(lambda x: time >= x, UNITS)
+    return next(iterator)
 
 
 def _qty_units(time: float, size_units: int) -> str:
     qty = round(time / size_units)
-    return '%7.0f %s%s' % (qty, UNITS[size_units], 's' if qty > 1 else '')
+    if qty > 1:
+        ending = 's'
+    else:
+        ending = ''
+    return f'{qty:7.0f} {UNITS[size_units]}{ending}'
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
-    symbols_number = 36
-    max_len_passwd = 12
     speed = FloatParameter('Brut-force speed, paswd/sec', is_positive, None,
                            1e6)
 
     def compute_and_print() -> None:
-        for i in range(1, max_len_passwd + 2):
-            variants_number = symbols_number**i
+        for i in range(1, MAX_LEN_PASSWD + 2):
+            variants_number = SYMBOLS_NUMBER**i
             time = variants_number / speed.value
-            if time < 1:
+            try:
+                units = _optimal_size_units(time)
+            except StopIteration:
                 text_time = 'less than one second'
             else:
-                text_time = _qty_units(time, _optimal_size_units(time))
+                text_time = _qty_units(time, units)
             entropy = log(variants_number) / log(2)
-            print('%2d symb. %21d variants, %2.0f bits, %s' %
-                  (i, variants_number, entropy, text_time))
+            print(f'{i:2d} symb. {variants_number:21d} variants, '
+                  f'{entropy:2.0f} bits, {text_time}')
 
     mainloop((speed,), compute_and_print)
 

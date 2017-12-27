@@ -17,12 +17,11 @@ def geom_mean(array: List[float]) -> float:
 
 
 def main() -> None:
-    """Выполняется при запуске модуля."""
     number = ArrayFloatParameter('Число')
 
     def compute_and_print() -> None:
-        print('Среднее арифметическое: {0}'.format(arith_mean(number.value)))
-        print('Среднее геометрическое: {0}'.format(geom_mean(number.value)))
+        print(f'Среднее арифметическое: {arith_mean(number.value)}')
+        print(f'Среднее геометрическое: {geom_mean(number.value)}')
 
     mainloop((number,), compute_and_print)
 

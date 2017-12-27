@@ -25,7 +25,7 @@ def replace_letters_by_digits(
     start_time = time()
 
     def print_ellapsed_time() -> None:
-        print('Прошло {0:.3f} сек'.format(time() - start_time), file=stderr)
+        print(f'Прошло {time() - start_time:.3f} сек', file=stderr)
 
     def compute(index: int) -> None:
         if index < qty_letters:
@@ -45,19 +45,18 @@ def replace_letters_by_digits(
 
 
 def _test_condition(digits: Dict[str, int]) -> bool:
-    dgj  = digits['D'] * 100  + digits['G'] * 10 + digits['J']
-    jae  = digits['J'] * 100  + digits['A'] * 10 + digits['E']
-    bhf  = digits['B'] * 100  + digits['H'] * 10 + digits['F']
+    dgj = digits['D'] * 100 + digits['G'] * 10 + digits['J']
+    jae = digits['J'] * 100 + digits['A'] * 10 + digits['E']
+    bhf = digits['B'] * 100 + digits['H'] * 10 + digits['F']
     ddab = digits['D'] * 1100 + digits['A'] * 10 + digits['B']
-    ga   = digits['G'] * 10   + digits['A']
-    return dgj + jae + bhf == ddab and \
-        digits['F'] * digits['C'] / digits['J'] == ga
+    ga = digits['G'] * 10 + digits['A']
+    return (dgj + jae + bhf == ddab and
+            digits['F'] * digits['C'] / digits['J'] == ga)
 
 
 def _print_answer(digits: Dict[str, int]) -> None:
-    values = ', '.join('{0} = {1}'.format(i, digits[i])
-                       for i in sorted(digits))
-    print('{0}\nA / G = {1}\n'.format(values, digits['A'] / digits['G']))
+    values = ', '.join(f'{i} = {digits[i]}' for i in sorted(digits))
+    print(f'{values}\nA / G = {digits["A"] / digits["G"]}\n')
 
 
 def main() -> None:
