@@ -5,11 +5,11 @@ import sympy
 from cli import ListFloatParameter, mainloop
 
 
-def armean(values: tuple[float, ...]) -> float:
+def _armean(values: tuple[float, ...]) -> float:
     return sum(values) / len(values)
 
 
-def geomean(values: tuple[float, ...]) -> Any:
+def _geomean(values: tuple[float, ...]) -> Any:
     mult = 1.0
     for i in values:
         mult *= i
@@ -17,13 +17,14 @@ def geomean(values: tuple[float, ...]) -> Any:
 
 
 def main() -> None:
-    numbers = ListFloatParameter('Число')
+    numbers = ListFloatParameter("Число")
 
     def calc_and_print() -> None:
-        print(f'Среднее арифметическое: {armean(numbers.value)}')
-        print(f'Среднее геометрическое: {geomean(numbers.value)}')
-    mainloop(calc_and_print, numbers)
+        print(f"Среднее арифметическое: {_armean(numbers.value)}")
+        print(f"Среднее геометрическое: {_geomean(numbers.value)}")
+
+    mainloop(calc_and_print, (numbers,))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

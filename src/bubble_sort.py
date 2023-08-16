@@ -1,7 +1,7 @@
 import random
 
 
-def bsort(items: list[int]) -> None:
+def _bsort(items: list[int]) -> None:
     size = len(items)
     for i in range(size - 1):
         need_sort = False
@@ -15,11 +15,11 @@ def bsort(items: list[int]) -> None:
 
 def main() -> None:
     random.seed()
-    items = [random.randint(0, 100) for _ in range(20)]
+    items = [random.randint(0, 100) for _ in range(19)]
     print(items)
-    bsort(items)
+    _bsort(items)
     print(items)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

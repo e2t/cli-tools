@@ -1,7 +1,7 @@
 import random
 
 
-def qsort(items: list[int], lowerb: int, upperb: int) -> None:
+def _qsort(items: list[int], lowerb: int, upperb: int) -> None:
     if upperb <= lowerb:
         return
     pivot = items[lowerb // 2 + upperb // 2]
@@ -15,17 +15,17 @@ def qsort(items: list[int], lowerb: int, upperb: int) -> None:
             items[lb], items[ub] = items[ub], items[lb]
             lb += 1
             ub -= 1
-    qsort(items, lowerb, ub)
-    qsort(items, lb, upperb)
+    _qsort(items, lowerb, ub)
+    _qsort(items, lb, upperb)
 
 
 def main() -> None:
     random.seed()
-    items = [random.randint(0, 100) for _ in range(20)]
+    items = [random.randint(0, 100) for _ in range(19)]
     print(items)
-    qsort(items, 0, len(items) - 1)
+    _qsort(items, 0, len(items) - 1)
     print(items)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

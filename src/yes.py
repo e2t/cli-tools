@@ -3,7 +3,7 @@ import sys
 
 def main() -> None:
     args = sys.argv[1:]
-    line = ' '.join(args) if args else 'y'
+    line = " ".join(args) if args else "y"
     try:
         while True:
             print(line)
@@ -11,5 +11,5 @@ def main() -> None:
         pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

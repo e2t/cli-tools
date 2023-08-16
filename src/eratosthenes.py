@@ -6,15 +6,15 @@ from typing import Generic, TypeVar
 import psutil
 from bitarray import bitarray
 
-T = TypeVar('T', bound=list[bool] | bitarray)
+_T = TypeVar("_T", bound=list[bool] | bitarray)
 
 
-class Sieve(Generic[T]):
+class _Sieve(Generic[_T]):
     # False - простое, True - не простое
     def __init__(self, maxnum: int) -> None:
         self._maxnum = maxnum
         self._size = (maxnum + 1) // 2
-        self._storage: T
+        self._storage: _T
 
     def calc(self) -> None:
         if self._maxnum < 2:
@@ -37,14 +37,14 @@ class Sieve(Generic[T]):
         self._storage.clear()
 
 
-class SimpleSieve(Sieve[list[bool]]):
+class _SimpleSieve(_Sieve[list[bool]]):
     def __init__(self, maxnum: int) -> None:
         super().__init__(maxnum)
 
         self._storage = [False] * self._size
 
 
-class BitarraySieve(Sieve[bitarray]):
+class _BitarraySieve(_Sieve[bitarray]):
     def __init__(self, maxnum: int) -> None:
         super().__init__(maxnum)
 
@@ -52,45 +52,45 @@ class BitarraySieve(Sieve[bitarray]):
         self._storage.setall(False)
 
 
-def print_time(sec: float) -> None:
+def _print_time(sec: float) -> None:
     print(f'\t[{time.strftime("%H:%M:%S", time.gmtime(sec))}]', flush=True)
 
 
-def test_sieve(sieve_t: type, maxnum: int) -> None:
-    print(f'{sieve_t}, MaxNumber = {maxnum}')
+def _test_sieve(sieve_t: type, maxnum: int) -> None:
+    print(f"{sieve_t}, MaxNumber = {maxnum}")
     sieve = sieve_t(maxnum)
 
-    print('Memory = ', end='')
+    print("Memory = ", end="")
     start = time.time()
     ram = psutil.Process(os.getpid()).memory_info().rss
     elapsed = time.time() - start
-    print(f'{ram}', end='')
-    print_time(elapsed)
+    print(f"{ram}", end="")
+    _print_time(elapsed)
 
-    print('Calculation...\t', end='')
+    print("Calculation...\t", end="")
     start = time.time()
     sieve.calc()
     elapsed = time.time() - start
-    print_time(elapsed)
+    _print_time(elapsed)
 
     if maxnum < 1000:
         for i in range(2, maxnum + 1):
             if sieve.isprime(i):
-                print(i, end=', ')
+                print(i, end=", ")
     sieve.clear()
-    print('\n')
+    print("\n")
 
 
 def main() -> None:
-    test_sieve(SimpleSieve, 103)
-    test_sieve(BitarraySieve, 103)
+    _test_sieve(_SimpleSieve, 103)
+    _test_sieve(_BitarraySieve, 103)
 
-    test_sieve(SimpleSieve, 750000000)  # 1.5 min, 1.5 GB
+    _test_sieve(_SimpleSieve, 750000000)  # 1.5 min, 1.5 GB
     gc.collect()
-    test_sieve(BitarraySieve, 750000000)  # 1.5 min, 50 MB
+    _test_sieve(_BitarraySieve, 750000000)  # 1.5 min, 50 MB
     gc.collect()
-    test_sieve(BitarraySieve, 2**32 - 16)  # almost int32, 21 min
+    _test_sieve(_BitarraySieve, 2**32 - 16)  # almost int32, 21 min
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

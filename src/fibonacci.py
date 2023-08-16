@@ -5,5 +5,5 @@ def main() -> None:
         a, b = b, a + b
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

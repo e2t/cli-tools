@@ -1,7 +1,7 @@
 import random
 
 
-def ssort(items: list[int]) -> None:
+def _ssort(items: list[int]) -> None:
     size = len(items)
     d = size // 2
     while d >= 1:
@@ -14,11 +14,11 @@ def ssort(items: list[int]) -> None:
 
 def main() -> None:
     random.seed()
-    items = [random.randint(0, 100) for _ in range(20)]
+    items = [random.randint(0, 100) for _ in range(19)]
     print(items)
-    ssort(items)
+    _ssort(items)
     print(items)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

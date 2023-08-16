@@ -1,11 +1,13 @@
-from typing import Callable
+from typing_extensions import Protocol
 
-from mypy_extensions import VarArg
-
-ENG = 'eng'
-UKR = 'ukr'
-RUS = 'rus'
-LIT = 'lit'
+ENG = "eng"
+UKR = "ukr"
+RUS = "rus"
+LIT = "lit"
 
 MsgFormat = dict[str, str] | str
-AddMsgL10n = Callable[[MsgFormat, VarArg()], None]
+
+
+class AddMsgL10n(Protocol):
+    def __call__(self, msg: MsgFormat, *args: object) -> None:
+        ...

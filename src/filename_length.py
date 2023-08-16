@@ -1,12 +1,13 @@
 import os
 import sys
-from tkinter.messagebox import showinfo
 
 
 def main() -> None:
-    filename = os.path.abspath(sys.argv[1])
-    showinfo('Длина имени файла', f'{filename}\nДлина {len(filename)} симв.')
+    for i in sys.argv[1:]:
+        filename = os.path.abspath(i)
+        print(f"{filename}\nДлина {len(filename)} симв.\n")
+    input()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -3,12 +3,12 @@ import sympy
 from cli import IntParameter, isthis, mainloop
 
 
-def check_number(value: int) -> bool:
-    return isthis(value > 1, 'Ожидается целое число больше единицы')
+def _check_number(value: int) -> bool:
+    return isthis(value > 1, "Ожидается целое число больше единицы")
 
 
 def main() -> None:
-    number = IntParameter('Число', check_number)
+    number = IntParameter("Число", _check_number)
     primes: list[int] = []
     max_size = 0
 
@@ -30,10 +30,10 @@ def main() -> None:
         if len(mults) > 1:
             print(mults)
         else:
-            print('Простое число')
+            print("Простое число")
 
-    mainloop(calc_and_print, number)
+    mainloop(calc_and_print, (number,))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

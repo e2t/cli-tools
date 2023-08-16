@@ -4,7 +4,7 @@ from random import randint
 
 
 def main() -> None:
-    lb, ub = 0, 78  # borders
+    lb, ub = 10, 70  # borders
     line_count = 5
 
     random.seed()
@@ -13,16 +13,16 @@ def main() -> None:
     stars = []
     for _ in range(line_count):
         stars.append(randint(minpos, maxpos))
-    line = [' '] * (ub + 1)
-    line[lb] = line[ub] = '│'
+    line = [" "] * (ub + 1)
+    line[lb] = line[ub] = "│"
     try:
         while True:
             unique_stars = set(stars)
             for i in unique_stars:
-                line[i] = '*'
-            print(''.join(line))
+                line[i] = "*"
+            print("".join(line))
             for i in unique_stars:
-                line[i] = ' '
+                line[i] = " "
 
             for i, pos in enumerate(stars):
                 if pos == minpos:
@@ -37,5 +37,5 @@ def main() -> None:
         pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
