@@ -1,3 +1,5 @@
+This project has been moved to https://codeberg.org/e2t/cli-tools
+
 # CliTools
 Консольні утиліти різного призначення: інженерні розрахунки, робота з файлами, типові програмістські завдання тощо.
 
